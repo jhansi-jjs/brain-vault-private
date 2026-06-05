@@ -24,10 +24,19 @@ export async function uploadFile(file: File) {
 }
 
 export async function addUrl(url: string) {
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new Error("Invalid URL");
+  }
+  if (!["http:", "https:"].includes(parsed.protocol)) {
+    throw new Error("Only http/https URLs are allowed");
+  }
   const res = await fetch(`${API_BASE}/api/add-url`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ url }),
+    body: JSON.stringify({ url: parsed.toString() }),
   });
   return handle(res);
 }
@@ -38,7 +47,7 @@ export async function getDocuments() {
 }
 
 export async function deleteDocument(id: string) {
-  const res = await fetch(`${API_BASE}/api/documents/${id}`, { method: "DELETE" });
+  const res = await fetch(`${API_BASE}/api/documents/${encodeURIComponent(id)}`, { method: "DELETE" });
   return handle(res);
 }
 
