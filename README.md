@@ -6,6 +6,25 @@ Brain Vault (LocalMind) enables users to build a personal knowledge base from do
 
 ---
 
+## 🎥 Demo Video
+
+Watch the complete project walkthrough and live demonstration:
+
+**Demo:**  
+https://drive.google.com/file/d/19UU8ITRVmGv5c-JS5azirHgeapuay82N/view?usp=sharing
+
+### What the demo covers
+
+- Uploading PDF, TXT, and Markdown files
+- Creating a personal knowledge base
+- Document indexing and retrieval
+- Chatting with uploaded documents using RAG
+- Source attribution and contextual answers
+- Switching between Ollama models
+- Knowledge base management and settings
+
+---
+
 ## Features
 
 ### Knowledge Base Management
