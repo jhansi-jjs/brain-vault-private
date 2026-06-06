@@ -275,13 +275,13 @@ http://localhost:11434
 Install dependencies:
 
 ```bash
-npm install
+bun install
 ```
 
 Start development server:
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 Frontend runs on:
