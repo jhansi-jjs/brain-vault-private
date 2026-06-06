@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Send, Paperclip, Brain, Loader2, FileText, StickyNote } from "lucide-react";
 import { toast } from "sonner";
 import { AppSidebar } from "@/components/AppSidebar";
-import { sendMessage, type ChatMessage } from "@/services/api";
+import { sendMessage, uploadFile, type ChatMessage } from "@/services/api";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({ meta: [{ title: "Chat — LocalMind" }] }),
@@ -23,6 +23,7 @@ function Dashboard() {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -88,9 +89,35 @@ function Dashboard() {
 
         <form onSubmit={handleSend} className="border-t border-border p-4">
           <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 focus-within:border-primary transition-colors">
-            <button type="button" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Attach">
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Attach"
+            >
               <Paperclip className="h-4 w-4" />
             </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="hidden"
+              onChange={async (e) => {
+                const files = e.target.files;
+                if (!files || files.length === 0) return;
+                try {
+                  for (const f of Array.from(files)) {
+                    await uploadFile(f);
+                  }
+                  toast.success("File(s) uploaded");
+                } catch (err) {
+                  console.error(err);
+                  toast.error("Upload failed");
+                } finally {
+                  // reset input so same file can be reselected
+                  if (fileInputRef.current) fileInputRef.current.value = "";
+                }
+              }}
+            />
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}

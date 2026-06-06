@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8000";
+const API_BASE = "http://127.0.0.1:8000";
 
 export type ChatMessage = { role: "user" | "assistant"; content: string };
 
@@ -20,7 +20,26 @@ export async function uploadFile(file: File) {
   const form = new FormData();
   form.append("file", file);
   const res = await fetch(`${API_BASE}/api/upload`, { method: "POST", body: form });
-  return handle(res);
+  // If response is not ok, throw with status and body (if available)
+  if (!res.ok) {
+    let body = "";
+    try {
+      body = await res.text();
+    } catch {}
+    throw new Error(`Upload failed: ${res.status} ${body}`);
+  }
+
+  // Try to parse JSON, but some backends return empty 200 OK — treat as success
+  const contentType = res.headers.get("content-type") || "";
+  if (contentType.includes("application/json")) {
+    try {
+      return await res.json();
+    } catch {
+      return { ok: true };
+    }
+  }
+
+  return { ok: true };
 }
 
 export async function addUrl(url: string) {

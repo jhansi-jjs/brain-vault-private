@@ -52,7 +52,7 @@ function DocumentsPage() {
       for (const f of Array.from(files)) {
         await uploadFile(f);
       }
-      toast.success("Uploaded successfully");
+      toast.success("Upload successful!");
       refresh();
     } catch {
       toast.error("Upload failed");
@@ -122,7 +122,11 @@ function DocumentsPage() {
               setDragOver(false);
               handleFiles(e.dataTransfer.files);
             }}
-            onClick={() => fileInput.current?.click()}
+            onClick={(e) => {
+              // Ensure click triggers the hidden file input
+              e.stopPropagation();
+              fileInput.current?.click();
+            }}
             className={`cursor-pointer rounded-2xl border-2 border-dashed p-12 text-center transition-all ${
               dragOver ? "border-primary bg-primary/5" : "border-primary/40 bg-card/30 hover:border-primary hover:bg-primary/5"
             }`}
